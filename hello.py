@@ -41,11 +41,17 @@ port = int(os.getenv('PORT', 8000))
 def root():
     return app.send_static_file('index.html')
 
+
+@app.route('/map')
+def mapdata():
+    return app.send_static_file('map3.html')
+
+
 '''
 def sortBy(doc, params):
     if(doc['data']['severity'] == params.get('severity', default = 0, type = int)):
         return doc['data']['name']
-'''
+''' 
 
 # Sends a GET request to server
 @app.route('/api/reports', methods=['GET'])
@@ -57,6 +63,7 @@ def get_reports():
         
     elif client:
         return jsonify(list(map(lambda doc: doc['data'], db)))
+        
     else:
         print('No database')
         return jsonify([])
