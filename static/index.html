@@ -23,11 +23,16 @@
     <script src="js/lib/jquery.i18n/jquery.i18n.emitter.js"></script>
     <script src="js/lib/jquery.i18n/jquery.i18n.emitter.bidi.js"></script>
     <script src="antixss.js" type="text/javascript"></script>
+    <script src='jquery-3.4.1.js'></script>
+
     <script src="js/index.js"></script>
 
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+
+
 </head>
 
 <body>
@@ -44,10 +49,10 @@
                     <a href="#">Reports</a>
                 </li>
                 <li>
-                    <a href="#">Map</a>
+                    <a href="map.html">Map</a>
                 </li>
                 <li>
-                    <a href="#">Settings</a>
+                    <a href="https://www.google.com">Settings</a>
                 </li>
             </ul>
         </nav>
@@ -66,8 +71,36 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="location">Location</label>
-                    <input class="form-control" id="location" placeholder="Type the location or ...">
+                    <button type="button" id="getLocationButton" class="btn btn-info" onclick="getLocation()">
+                        <span>Get Location</span>
+                    </button>
+                    <p id="error"></p>
+                    Latitude: <input class="form-control" id="latitude" placeholder="Enter the latitude">
+                    Longitude: <input class="form-control" id="longitude" placeholder="Enter the longitude">
+                    <script>
+                        var lat = document.getElementById("latitude");
+                        var lon = document.getElementById("longitude");
+                        var x = document.getElementById("error");
+
+                        function getLocation(){
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition(showPosition);
+                            } else { 
+                                x.innerHTML = "Geolocation is not supported by this browser.";
+                            }
+                        }
+
+                        function showPosition(position) {
+                            /*var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+                            var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="
+                                        +latlon+ "&zoom=14&size=400x300&sensor=false";
+
+                            x.innerHTML = "<img src='"+img_url+"'>";*/
+                            lat.value = position.coords.latitude;
+                            lon.value = position.coords.longitude;
+                        }
+                    </script>
                 </div>
 
                 <div class="form-group">
@@ -79,7 +112,11 @@
                     <label for="typeOfIncident">Please select type of the incident</label>
                     <select class="form-control" id="typeOfIncident" rows="1">
                         <option>Body injury (Someone got hurt)</option>
-                        <option>No body injury yet</option>
+                        <option></option>
+                        <option></option>
+                        <option></option>
+                        <option></option>
+                        <option></option>
                     </select>
                 </div>
 
@@ -89,6 +126,39 @@
                     <input type="range" class="" min="0" max="4" step="1" id="severity">
                     <span class="font-weight-bold red-text mr-2 mt-1">5</span>
                 </div>
+
+                <div>
+                    <button type="button" id="onSubmit" class="btn btn-info" onclick="mysubmit()">
+                        <span>Submit</span>
+                    </button>
+                    <script>
+                        function mysubmit(){
+                            var desc=document.getElementById('Description').value;
+                            var id_disaster = 1;
+                            var name = document.getElementById('name').value;
+                            var severity = document.getElementById('severity').value;
+                            var type = 0;
+                            var latitude = document.getElementById("latitude").value;
+                            var longitude = document.getElementById("longitude").value;
+                            $.ajax({
+                                url:"https://requesthelpnow-insightful-elephant.mybluemix.net/api/reports",
+                                method: 'POST',
+                                dataType: 'json',
+                                data:{
+                                    "desc": desc,
+                                    "id_of_disaster": id_disaster,
+                                    "name": name,
+                                    "severity":severity,
+                                    "type":type,
+                                    "latitude":latitude,
+                                    "longitude":longitude
+                                }
+                            }
+                            );
+                        }
+                    </script>
+                </div>
+                
             </form>
         </div>
     </div>
@@ -96,7 +166,7 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!--script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
