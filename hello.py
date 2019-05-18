@@ -20,9 +20,7 @@ if 'VCAP_SERVICES' in os.environ:
         url = 'https://' + creds['host']
         client = Cloudant(user, password, url=url, connect=True)
         db = client.create_database(db_name, throw_on_exists=False)
-elif "CLOUDANT_URL" in os.environ:
-    client = Cloudant(os.environ['CLOUDANT_USERNAME'], os.environ['CLOUDANT_PASSWORD'], url=os.environ['CLOUDANT_URL'], connect=True)
-    db = client.create_database(db_name, throw_on_exists=False)
+'''
 elif os.path.isfile('vcap-local.json'):
     with open('vcap-local.json') as f:
         vcap = json.load(f)
@@ -33,6 +31,7 @@ elif os.path.isfile('vcap-local.json'):
         url = 'https://' + creds['host']
         client = Cloudant(user, password, url=url, connect=True)
         db = client.create_database(db_name, throw_on_exists=False)
+'''
 
 # On IBM Cloud Cloud Foundry, get the port number from the environment variable PORT
 # When running this app on the local machine, default the port to 8000
@@ -48,10 +47,11 @@ def root():
 # *     "name": "Bob"
 # * }
 # */
-@app.route('/api/visitors', methods=['GET'])
-def get_visitor():
+
+@app.route('/api/reports', methods=['GET'])
+def get_reports():
     if client:
-        return jsonify(list(map(lambda doc: doc['name'], db)))
+        return jsonify(list(map(lambda doc: doc['data'], db)))
     else:
         print('No database')
         return jsonify([])
@@ -67,14 +67,34 @@ def get_visitor():
 #  * [ "Bob", "Jane" ]
 #  * @return An array of all the visitor names
 #  */
-@app.route('/api/visitors', methods=['POST'])
-def put_visitor():
-    user = request.json['name']
-    data = {'name':user}
+@app.route('/api/reports', methods=['POST'])
+def post_report():
+
+    # Define the request params
+    # NAME : STRING | LOCATION : STRING | DESC : STRING | SEVERITY : INT | TYPE : INT | ID_OF_DISASTER : INT
+    # TODO :  Seperate name into firstname and lastname (?)
+
+    _name = request.json['name']
+    _location = request.json['location']
+    _desc = request.json['desc']
+    _severity = request.json['severity']
+    _type = request.json['type']
+    _disasterID = request.json['id_of_disaster']
+
+    data = {'data': 
+            {'name': _name,
+            'location': _location,
+            'desc': _desc,
+            'severity': _severity,
+            'type': _type,
+            'id_of_disaster': _disasterID}}
+
+            
     if client:
         my_document = db.create_document(data)
         data['_id'] = my_document['_id']
         return jsonify(data)
+
     else:
         print('No database')
         return jsonify(data)
