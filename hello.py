@@ -46,6 +46,10 @@ def root():
 def mapdata():
     return app.send_static_file('map3.html')
 
+@app.route('/liist')
+def liist():
+    return app.send_static_file('liist.html')
+
 
 '''
 def sortBy(doc, params):
