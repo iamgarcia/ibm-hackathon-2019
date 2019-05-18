@@ -71,8 +71,36 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="location">Location</label>
-                    <input class="form-control" id="location" placeholder="Type the location or ...">
+                    <button type="button" id="getLocationButton" class="btn btn-info" onclick="getLocation()">
+                        <span>Get Location</span>
+                    </button>
+                    <p id="error"></p>
+                    Latitude: <input class="form-control" id="latitude" placeholder="Enter the latitude">
+                    Longitude: <input class="form-control" id="longitude" placeholder="Enter the longitude">
+                    <script>
+                        var lat = document.getElementById("latitude");
+                        var lon = document.getElementById("longitude");
+                        var x = document.getElementById("error");
+
+                        function getLocation(){
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition(showPosition);
+                            } else { 
+                                x.innerHTML = "Geolocation is not supported by this browser.";
+                            }
+                        }
+
+                        function showPosition(position) {
+                            /*var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+                            var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="
+                                        +latlon+ "&zoom=14&size=400x300&sensor=false";
+
+                            x.innerHTML = "<img src='"+img_url+"'>";*/
+                            lat.value = position.coords.latitude;
+                            lon.value = position.coords.longitude;
+                        }
+                    </script>
                 </div>
 
                 <div class="form-group">
@@ -107,12 +135,11 @@
                         function mysubmit(){
                             var desc=document.getElementById('Description').value;
                             var id_disaster = 1;
-                            var location = '-';
                             var name = document.getElementById('name').value;
                             var severity = document.getElementById('severity').value;
                             var type = 0;
-                            var latitude = 100;
-                            var longitude = 100;
+                            var latitude = document.getElementById("latitude").value;
+                            var longitude = document.getElementById("longitude").value;
                             $.ajax({
                                 url:"https://requesthelpnow-insightful-elephant.mybluemix.net/api/reports",
                                 method: 'POST',
