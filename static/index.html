@@ -103,21 +103,22 @@
                     </script>
                 </div>
 
-                <div class="form-group">
-                <label for="Description">Description</label>
-                <textarea class="form-control" id="Description" rows="3"></textarea>
-                </div>
-
                 <div>
                     <label for="typeOfIncident">Please select type of the incident</label>
                     <select class="form-control" id="typeOfIncident" rows="1">
                         <option>Body injury (Someone got hurt)</option>
-                        <option></option>
-                        <option></option>
-                        <option></option>
-                        <option></option>
-                        <option></option>
+                        <option>Earthquake</option>
+                        <option>Wild fire</option>
+                        <option>Flood</option>
+                        <option>Overpopulated hospital</option>
+                        <option>Road block</option>
+                        <option>Others</option>
                     </select>
+                </div>
+
+                <div class="form-group">
+                <label for="Description">Description</label>
+                <textarea class="form-control" id="Description" rows="3"></textarea>
                 </div>
 
                 <div>
@@ -137,7 +138,8 @@
                             var id_disaster = 1;
                             var name = document.getElementById('name').value;
                             var severity = document.getElementById('severity').value;
-                            var type = 0;
+                            var temp = document.getElementById("typeOfIncident");
+                            var type = temp.value;
                             var latitude = document.getElementById("latitude").value;
                             var longitude = document.getElementById("longitude").value;
                             $.ajax({
