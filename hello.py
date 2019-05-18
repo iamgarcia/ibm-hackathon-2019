@@ -69,16 +69,18 @@ def post_report():
     # NAME : STRING | LOCATION : STRING | DESC : STRING | SEVERITY : INT | TYPE : INT | ID_OF_DISASTER : INT
     # TODO :  Seperate name into firstname and lastname (?)
 
-    _name = request.json['name']
-    _location = request.json['location']
-    _desc = request.json['desc']
-    _severity = request.json['severity']
-    _type = request.json['type']
-    _disasterID = request.json['id_of_disaster']
+    _name = request.form['name']
+    _longitude = request.form['longitude']
+    _latitude = request.form['latitude']
+    _desc = request.form['desc']
+    _severity = request.form['severity']
+    _type = request.form['type']
+    _disasterID = request.form['id_of_disaster']
 
     data = {'data': 
             {'name': _name,
-            'location': _location,
+            'longitude': _longitude,
+            'latitude': _latitude,
             'desc': _desc,
             'severity': _severity,
             'type': _type,
