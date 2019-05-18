@@ -41,32 +41,27 @@ port = int(os.getenv('PORT', 8000))
 def root():
     return app.send_static_file('index.html')
 
-# /* Endpoint to greet and add a new visitor to database.
-# * Send a POST request to localhost:8000/api/visitors with body
-# * {
-# *     "name": "Bob"
-# * }
-# */
+'''
+def sortBy(doc, params):
+    if(doc['data']['severity'] == params.get('severity', default = 0, type = int)):
+        return doc['data']['name']
+'''
 
+# Sends a GET request to server
 @app.route('/api/reports', methods=['GET'])
 def get_reports():
-    if client:
+    params = request.args
+
+    if len(params) > 0:
+        pass
+        
+    elif client:
         return jsonify(list(map(lambda doc: doc['data'], db)))
     else:
         print('No database')
         return jsonify([])
 
-# /**
-#  * Endpoint to get a JSON array of all the visitors in the database
-#  * REST API example:
-#  * <code>
-#  * GET http://localhost:8000/api/visitors
-#  * </code>
-#  *
-#  * Response:
-#  * [ "Bob", "Jane" ]
-#  * @return An array of all the visitor names
-#  */
+# Sends a POST request to server
 @app.route('/api/reports', methods=['POST'])
 def post_report():
 
