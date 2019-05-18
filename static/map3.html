@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+    <script src='jquery-3.4.1.js'></script>
+    
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .marker {
+  		background-image: url('map-marker.png');
+  		background-size: cover;
+  		width: 50px;
+  		height: 50px;
+  		border-radius: 50%;
+  		cursor: pointer;
+	  }
+
+	  .mapboxgl-popup {
+  		max-width: 200px;
+	  }
+
+	  .mapboxgl-popup-content {
+  		text-align: center;
+  		font-family: 'Open Sans', sans-serif;
+	 }
+
+
+	 /* Dropdown Button */
+	.dropbtn {
+ 	 background-color: #3498DB;
+ 	 color: white;
+ 	 padding: 16px;
+ 	 font-size: 16px;
+ 	 border: none;
+ 	 cursor: pointer;
+	}
+
+	/* Dropdown button on hover & focus */
+	.dropbtn:hover, .dropbtn:focus {
+	  background-color: #2980B9;
+	}
+
+	/* The container <div> - needed to position the dropdown content */
+	.dropdown {
+ 	 position: relative;
+ 	 display: inline-block;
+	}
+
+	/* Dropdown Content (Hidden by Default) */
+	.dropdown-content {
+  	display: none;
+  	position: absolute;
+  	background-color: #f1f1f1;
+  	min-width: 160px;
+  	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  	z-index: 1;
+	}
+
+	  /* Links inside the dropdown */
+	.dropdown-content a {
+ 	 color: black;
+ 	 padding: 12px 16px;
+ 	 text-decoration: none;
+ 	 display: block;
+	}
+
+	/* Change color of dropdown links on hover */
+	.dropdown-content a:hover {background-color: #ddd}
+
+	/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+	.show {display:block;}
+    </style>
+</head>
+<body>
+
+
+<div id='map'>
+
+<script>
+
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+
+
+mapboxgl.accessToken = 'pk.eyJ1Ijoicmlja3lwZW5nMCIsImEiOiJjanZ0NTZmaXkzZDU2M3pxcmhkYTkwb2pnIn0.DjY6cU2TYL7ed9NBM7vj3g';
+
+var map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/light-v10',
+  center: [-96, 37.8],
+  zoom: 3
+});
+
+// code from the next step will go here!
+
+
+$.getJSON('https://requesthelpnow-insightful-elephant.mybluemix.net/api/reports', function(data){
+          console.log(data);
+          addMarkers(data);
+          //myBooks = data;
+});
+
+function addMarkers(geojson) {
+  // add markers to map
+  console.log("what happens");
+  geojson.forEach(function(marker) {
+
+    // create a HTML element for each feature
+    var el = document.createElement('div');
+    el.className = 'marker';
+
+    // make a marker for each feature and add to the map
+    new mapboxgl.Marker(el)
+     .setLngLat([parseInt(marker['longitude']), parseInt(marker['latitude'])])
+      .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+      .setHTML('<h3>' + marker['desc'] + '</h3><p>' + marker['name'] + '</p>'))
+      .addTo(map);
+  });
+}
+
+</script>
+</div>
+<div class="dropdown">
+  <button onclick="myFunction()" class="dropbtn">Map</button>
+  <div id="myDropdown" class="dropdown-content">
+    <a href="#">Report</a>
+    <a href="#">Signals</a>
+    <a href="#">Settings</a>
+  </div>
+</div>
+</body>
+</html>

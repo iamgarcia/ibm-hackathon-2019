@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Convert JSON Data to HTML Table</title>
+    <script src='jquery-3.4.1.js'></script>
+    <style>
+        th, td, p, input {
+            font:14px Verdana;
+        }
+        table, th, td 
+        {
+            border: solid 1px #DDD;
+            border-collapse: collapse;
+            padding: 2px 3px;
+            text-align: center;
+        }
+        th {
+            font-weight:bold;
+        }
+        table, input {
+          margin-left:auto; 
+          margin-right:auto;
+          border: solid 1px #DDD;
+            border-collapse: collapse;
+            padding: 2px 3px;
+            text-align: center;
+        }
+        @font-face {
+          font-family: OpenSans-Regular;
+          src: url('../fonts/OpenSans/OpenSans-Regular.ttf'); 
+        }
+        table {
+  border: 2px solid #A40808;
+  background-color: #EEE7DB;
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+table td, table th {
+  border: 1px solid #AAAAAA;
+  padding: 3px 2px;
+}
+table tbody td {
+  font-size: 13px;
+}
+table tr:nth-child(even) {
+  background: #F5C8BF;
+}
+table thead {
+  background: #A40808;
+}
+table thead th {
+  font-size: 19px;
+  font-weight: bold;
+  color: #FFFFFF;
+  text-align: center;
+  border-left: 2px solid #A40808;
+}
+table thead th:first-child {
+  border-left: none;
+}
+
+table tfoot {
+  font-size: 13px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background: #A40808;
+}
+table tfoot td {
+  font-size: 13px;
+}
+table tfoot .links {
+  text-align: right;
+}
+table tfoot .links a{
+  display: inline-block;
+  background: #FFFFFF;
+  color: #A40808;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+    </style>
+</head>
+<body>
+  <div>
+    <!--<input type="button" onclick="CreateTableFromJSON()" value="Create Table From JSON" />-->
+    <p id="showData">Requesting List</p>
+  </div>
+  <div>
+  <br/>
+
+<script>
+    $.getJSON('https://requesthelpnow-insightful-elephant.mybluemix.net/api/reports', function(data){
+          CreateTableFromJSON(data);
+          //myBooks = data;
+        });
+
+    function CreateTableFromJSON(myBooks) {
+       
+       
+        //console.log("myBooks");
+        //console.log(myBooks);
+
+        // Sort the json structure based on Severity scale
+        function swap(array, i, j) {
+          var temp = array[i];
+          array[i] = array[j];
+          array[j] = temp;
+        }
+        
+        for(var i = 0; i < myBooks.length; i++) {
+          for(var j = 1; j < myBooks.length; j++) {
+            if(myBooks[j - 1]['severity'] < myBooks[j]['severity']) {
+              swap(myBooks, j - 1, j);
+            }
+          }
+        }
+
+        // EXTRACT VALUE FOR HTML HEADER. 
+        // ('Book ID', 'Book Name', 'Category' and 'Price')
+        var col = [];
+        for (var i = 0; i < myBooks.length; i++) {
+            for (var key in myBooks[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+
+        // CREATE DYNAMIC TABLE.
+        var table = document.createElement("table");
+
+        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");      // TABLE HEADER.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // ADD JSON DATA TO THE TABLE AS ROWS.
+        for (var i = 0; i < myBooks.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = myBooks[i][col[j]];
+            }
+        }
+
+        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+        var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+    }
+</script>
+</div>
+</body>
+</html>
