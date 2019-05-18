@@ -28,6 +28,13 @@ body {
   align-items: stretch;
 }
 
+#content {
+  padding: 10px;
+}
+
+form {
+  padding: 10px;
+}
 p {
   font-family: 'Poppins', sans-serif;
   font-size: 1.1em;
